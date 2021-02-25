@@ -12,10 +12,26 @@ services:
       - ./main:/work
       - ./settings/nginx/default.conf:/etc/nginx/conf.d/default.conf
     working_dir: /work
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
   db:
     build: ./settings/mysql
     volumes:
       - db-store:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+    links:
+      - db
+    ports:
+      - 8080:80
+    volumes:
+      - "./phpmyadmin/sessions:/sessions"
 
 volumes:
   db-store:
